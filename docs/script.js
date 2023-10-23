@@ -118,10 +118,11 @@ const main = async function(seed, iter, tabs) {
         return;
     }
     const activeTab = tabs ? tabs[0] : null;
-    const domainName = activeTab ? new URL(activeTab.url).hostname : null;
+    const domainName = activeTab ? new URL(activeTab.url).hostname
+                                 : new URL(window.location.href).hostname;
 
     // replace %d with the domain name in the seed
-    seed = domainName ? seed.replace(/\%\d/g, domainName): seed;
+    seed = domainName ? seed.replace(/%d/g, domainName): seed;
     iter = parseInt(iter);
 
     // print the seed and iter values
