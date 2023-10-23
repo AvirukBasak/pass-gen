@@ -6,210 +6,34 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="description" content="Generate a unique password from given seed and iter">
   <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
-  <link type="stylesheet" href="https://cdn.jsdelivr.net/gh/hyrious/github-markdown-css@main/dist/light.css" />
-  <link type="stylesheet" href="github-md-light.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hyrious/github-markdown-css@main/dist/light.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <link rel="stylesheet" href="github-md-light.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" />
+  <link rel="icon" href="favicon.svg" />
+  <link rel="icon" href="favicon.png" />
+  <script defer src="script.js"></script>
   <title>Pass Gen</title>
-  <style>
-    * {
-      --border-style: 1px solid #dadada;
-    }
-
-    html,
-    body {
-      font-family: sans-serif;
-      font-size: 105%;
-      margin: 0;
-    }
-
-    .user-select {
-      outline: initial;
-      user-select: text;
-      -webkit-user-select: text;
-      -moz-user-select: -moz-text;
-      -ms-user-select: text;
-      -webkit-tap-highlight-color: initial;
-    }
-
-    .user-no-select {
-      outline: none;
-      user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: -moz-none;
-      -ms-user-select: none;
-      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    }
-
-    h3 {
-      margin-left: 15px;
-      margin: 25px 0 25px 15px;
-    }
-
-    div {
-      margin: 5px;
-      padding: 5px;
-      width: calc(100% - 20px);
-      max-width: 500px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #div-input {
-      justify-content: space-evenly;
-    }
-
-    #div-root {}
-
-    #div-result {
-      margin: 0;
-      padding: 0;
-      width: calc(100% - 10px);
-    }
-
-    div#div-result div {
-      margin: 0;
-      margin-bottom: 20px;
-      color: #474141;
-      font-size: 0.85rem;
-    }
-
-    div#div-result p {
-      margin: 0;
-      padding: 0;
-    }
-
-    div#div-result img {
-      margin: 0;
-      padding: 0;
-      width: calc(100% - 2px);
-      border-top: var(--border-style);
-      border-radius: 5px;
-    }
-
-    div#div-result div#div-placeholder {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      min-height: 100px;
-      border: var(--border-style);
-      border-radius: 5px;
-      color: #aaa;
-      font-size: 0.79rem;
-    }
-
-    div#div-result div#div-passwd {
-      margin: 0;
-      padding: 20px;
-      background-color: #e8e9eb;
-      border-radius: 5px;
-      color: #474141;
-      font-size: 0.85rem;
-      display: none;
-      flex-direction: column;
-    }
-
-    div#div-result div#div-passwd label {
-      margin: 0;
-      padding: 0;
-      margin-bottom: 5px;
-      margin-right: auto;
-      font-weight: bold;
-      font-size: 0.7rem;
-      background-color: #e8e9eb;
-      border-radius: 5px;
-    }
-
-    div#div-result div#div-passwd div#span {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      margin-bottom: 15px;
-      font-size: 1rem;
-      font-weight: bold;
-      font-family: monospace;
-      color: #474141;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    div#div-result div#div-passwd div#span #btn-copy {
-      margin: 0;
-      padding: 10px;
-      border: var(--border-style);
-      border-radius: 5px;
-      color: #1f6edb;
-      transition-duration: 150ms;
-      font-weight: bold;
-    }
-
-    div#div-result div#div-passwd div#span #btn-copy:hover {
-      transition-duration: 150ms;
-      cursor: pointer;
-    }
-
-    #img-stats {
-      margin-bottom: 10px;
-      display: none;
-    }
-
-    #txt-seed {
-      padding: 0 10px;
-      margin-right: 5px;
-      height: calc(2rem - 1.25px);
-      width: calc(100% - 20px - 5px - 5px - 13.1rem);
-      background-color: #f8f8f8;
-      border: var(--border-style);
-      border-radius: 5px;
-    }
-
-    #txt-iter {
-      padding: 0 10px;
-      margin-right: 5px;
-      height: calc(2rem - 1.25px);
-      width: calc(6rem);
-      background-color: #f8f8f8;
-      border: var(--border-style);
-      border-radius: 5px;
-    }
-
-    #btn-gen {
-      padding: 0 10px;
-      height: calc(2rem);
-      color: white;
-      border: 0.5px solid #3080ed;
-      background-color: #2773df;
-      border-radius: 5px;
-      transition-duration: 150ms;
-      cursor: pointer;
-    }
-
-    #btn-gen:hover,
-    #btn-gen:active {
-      background-color: #2f86e9;
-      transition-duration: 150ms;
-    }
-  </style>
 </head>
 
 <body>
   <h3 class="user-no-select">Pass Gen</h3>
   <div id="div-input">
     <input type="text" id="txt-seed" placeholder="Enter seed" class="user-no-select" />
-    <input type="number" min="1" id="txt-iter" placeholder="Enter iter" class="user-no-select" />
-    <input type="button" id="btn-gen" value="Generate" onclick="genOnSubmit()" class="user-no-select" />
+    <input type="number" min="10000" id="txt-iter" placeholder="Enter iter" class="user-no-select" />
+    <input type="button" id="btn-gen" value="Generate" class="user-no-select" />
   </div>
   <div id="div-root">
     <div id="div-result" class="user-no-select">
       <div id="div-placeholder">No input provided</div>
+      <div id="div-status">Generating...</div>
       <div id="div-passwd">
         <label>Password</label>
         <div id="span">
           <font id="font-passwd" class="user-select"></font>
           <!-- insert a copy icon button here -->
-          <button id="btn-copy" onclick="copyToClipboard()" class="user-no-select">
+          <button id="btn-copy" class="user-no-select">
             <i class="far fa-copy"></i>
           </button>
         </div>
@@ -217,101 +41,5 @@
       </div>
     </div>
   </div>
-  <script>
-    const Placeholder = document.getElementById('div-placeholder');
-    const Passwd = document.getElementById('div-passwd');
-    const FontPasswd = document.getElementById('font-passwd');
-    const ImgStats = document.getElementById('img-stats');
-    const SeedInp = document.getElementById('txt-seed');
-    const IterInp = document.getElementById('txt-iter');
-
-    const genOnSubmit = function () {
-      const seedInp = SeedInp.value.trim();
-      const iterInp = IterInp.value.trim();
-      if (seedInp) {
-        location.href = `${location.href.split('?')[0]}?seed=${seedInp}&iter=${iterInp}`;
-      }
-    }
-
-    function copyToClipboard() {
-      const range = document.createRange();
-      range.selectNode(FontPasswd);
-      window.getSelection().removeAllRanges();
-      window.getSelection().addRange(range);
-      document.execCommand('copy');
-      range.selectNode(ImgStats);
-      window.getSelection().removeAllRanges();
-      window.getSelection().addRange(range);
-      setTimeout(() => {
-        const btnCopy = document.getElementById('btn-copy');
-        btnCopy.innerHTML = '<i class="fas fa-check"></i> Copied';
-        setTimeout(() => {
-          btnCopy.innerHTML = '<i class="far fa-copy"></i>';
-        }, 1500);
-      }, 0);
-    }
-
-    // define the sha256sum function
-    async function sha256sum(seed) {
-      const hash = await crypto.subtle
-        .digest('SHA-256', new TextEncoder('utf-8')
-          .encode(seed));
-      const hexString = Array.from(new Uint8Array(hash))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-      const formattedString = hexString.split('')
-        .map((c, i) => i % 2 === 0 ? c.toUpperCase() : c.toLowerCase())
-        .join('');
-      return formattedString;
-    }
-
-    // define the hash function
-    async function mkhash(seed, iter) {
-      let hash = seed;
-      iter = Math.min(seed.length, iter) / Math.min(seed.length, iter);
-      for (let i = 0; i < iter; ++i)
-        hash = await sha256sum(hash);
-      return hash;
-    }
-
-    const url = new URL(location);
-    const seedParam = url.searchParams.get('seed');
-    const iterParam = url.searchParams.get('iter');
-
-    // set the input values
-    SeedInp.value = seedParam;
-    IterInp.value = iterParam;
-
-    // check if (seedParam) and generate a 16 character long password from the sha512 hash of the seed
-    // if iter is absent then assume a random iter b/w 0 and pow(2,32) otherwise perform iter numbers of
-    // sha 512 iterations on the seed
-    (async function () {
-      if (seedParam) {
-        const seed = SeedInp.value;
-        const iter = parseInt(IterInp.value) || Math.floor(Math.random() * Math.pow(2, 8) + 1);
-        const hash = await mkhash(seed, iter);
-
-        SeedInp.value = seed;
-        IterInp.value = iter;
-
-        /* create a 16 char long password by taking a 8 char and another 7 char long substring from the hash
-           from the start and middle respectively and then reversing the middle 3 chars of the 7 char long substring
-          and joining the two substrings with a '@' in between */
-        const pass = hash.substring(15, 22) + '@'
-          + hash.substring(8, 15).split('').reverse().join('');
-
-        const statsImg = `https://chart.googleapis.com/chart?cht=qr&chs=256x256&chl=${encodeURIComponent(pass)}`;
-
-        // hide the placeholder and show the password and stats image
-        Placeholder.style.display = 'none';
-        Passwd.style.display = 'flex';
-        ImgStats.style.display = 'block';
-        // set the password in the font element
-        FontPasswd.innerHTML = pass;
-        ImgStats.src = statsImg;
-      }
-    })();
-
-  </script>
 </body>
 </html>

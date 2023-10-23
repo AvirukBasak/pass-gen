@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Pass Gen",
+  "version": "1.0",
+  "description": "Generate a unique password from given seed and iter",
+  "permissions": [
+    "clipboardWrite",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://chart.googleapis.com/",
+    "https://cdn.jsdelivr.net/",
+    "https://cdnjs.cloudflare.com/"
+  ],
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; script-src-elem 'self' 'unsafe-inline';"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}
