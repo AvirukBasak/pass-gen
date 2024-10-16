@@ -1,12 +1,55 @@
-const Placeholder = document.getElementById('div-placeholder');
-const Status = document.getElementById('div-status');
-const Passwd = document.getElementById('div-passwd');
-const FontPasswd = document.getElementById('font-passwd');
-const ImgStats = document.getElementById('img-stats');
-const SeedInp = document.getElementById('txt-seed');
-const IterInp = document.getElementById('txt-iter');
-const GenBtn = document.getElementById('btn-gen');
-const CopyBtn = document.getElementById('btn-copy');
+const Placeholder = /** @type {HTMLElement | null} */ (
+  document.getElementById("div-placeholder")
+);
+const Status = /** @type {HTMLElement | null} */ (
+  document.getElementById("div-status")
+);
+const Passwd = /** @type {HTMLElement | null} */ (
+  document.getElementById("div-passwd")
+);
+const FontPasswd = /** @type {HTMLElement | null} */ (
+  document.getElementById("font-passwd")
+);
+const ImgStats = /** @type {HTMLImageElement | null} */ (
+  document.getElementById("img-stats")
+);
+const SeedInp = /** @type {HTMLInputElement | null} */ (
+  document.getElementById("txt-seed")
+);
+const IterInp = /** @type {HTMLInputElement | null} */ (
+  document.getElementById("txt-iter")
+);
+const GenBtn = /** @type {HTMLButtonElement | null} */ (
+  document.getElementById("btn-gen")
+);
+const CopyBtn = /** @type {HTMLButtonElement | null} */ (
+  document.getElementById("btn-copy")
+);
+
+if (
+  !Placeholder ||
+  !Status ||
+  !Passwd ||
+  !FontPasswd ||
+  !ImgStats ||
+  !SeedInp ||
+  !IterInp ||
+  !GenBtn ||
+  !CopyBtn
+) {
+  console.table({
+    Placeholder,
+    Status,
+    Passwd,
+    FontPasswd,
+    ImgStats,
+    SeedInp,
+    IterInp,
+    GenBtn,
+    CopyBtn,
+  });
+  throw new Error("missing one or more elements");
+}
 
 /**
  * Copy the password to the clipboard
