@@ -96,6 +96,16 @@ const sha256sum = async function (seed) {
   return formattedString;
 };
 
+let ChangesUnsaved = false;
+
+window.onbeforeunload = function () {
+  // check if the changes are unsaved and its not a chrome extension
+  // @ts-ignore
+  if (ChangesUnsaved && !chrome?.tabs?.query) {
+    return "Pass Gen still running. Are you sure you want to leave?";
+  }
+};
+
 /**
  * Generate a hash from the seed by performing iter number of sha256 iterations on the seed
  * @param {string} seed - The seed string
@@ -108,6 +118,8 @@ const mkhash = async function (seed, iter) {
   // keep track of the time taken to perform the last iteration
   let lastTime = Date.now();
   let timePer1000Iteration = 0;
+
+  ChangesUnsaved = true;
 
   for (let i = 0; i < iter; ++i) {
     hash = await sha256sum(hash);
@@ -148,6 +160,9 @@ const mkhash = async function (seed, iter) {
     }
     Status.innerHTML += ` (${timeEstimate.toFixed(2)} ${timeUnit} remaining)`;
   }
+
+  ChangesUnsaved = false;
+
   return hash;
 };
 
@@ -212,7 +227,7 @@ const main = async function (seed, iter, tabs) {
   // hide the status and show the password and QR code image
   Status.style.display = "none";
   Passwd.style.display = "flex";
-  ImgStats.style.display = "block";
+  ImgStats.style.display = "none";
 
   // enable the generate button
   GenBtn.disabled = false;

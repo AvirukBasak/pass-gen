@@ -85,7 +85,7 @@ div#div-result div#div-placeholder {
     margin: 0;
     padding: 0;
     width: 100%;
-    min-height: 100px;
+    min-height: 110px;
     border: var(--border-style);
     border-radius: 5px;
     color: #aaa;
@@ -96,7 +96,7 @@ div#div-result div#div-status {
     margin: 0;
     padding: 0;
     width: 100%;
-    min-height: 100px;
+    min-height: 110px;
     border: var(--border-style);
     border-radius: 5px;
     color: #383535;
