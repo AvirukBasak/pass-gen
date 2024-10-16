@@ -223,7 +223,12 @@ const main = async function (seed, iter, tabs) {
 };
 
 const genOnSubmit = function () {
-  const seed = SeedInp.value.trim();
+  let seed = SeedInp.value.trim();
+  if (!seed) {
+    // default seed: stands for the domain name of the active tab
+    seed = "%d";
+  }
+
   let iterStr = IterInp.value.trim();
   if (!iterStr) {
     iterStr = String(Math.floor(Math.random() * Math.pow(2, 16) + 10000));
@@ -237,22 +242,20 @@ const genOnSubmit = function () {
     return;
   }
 
-  /* check if (seed) and generate a 16 character long password from the sha512 hash of the seed
-    if iter is absent then assume a random iter b/w 1 and pow(2,8) otherwise perform len / iter numbers
-    of SHA-256 hashing iterations on the seed */
-  if (seed) {
-    SeedInp.value = seed;
-    IterInp.value = String(iter);
+  /* generate a 16 character long password from the sha512 hash of the seed
+     if iter is absent then assume a random iter b/w 1 and pow(2,8) otherwise perform len / iter numbers
+     of SHA-256 hashing iterations on the seed */
+  SeedInp.value = seed;
+  IterInp.value = String(iter);
+  // @ts-ignore
+  if (chrome?.tabs?.query) {
     // @ts-ignore
-    if (chrome?.tabs?.query) {
-      // @ts-ignore
-      chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) =>
-        main(seed, iter, tabs)
-      );
-      document.body.style.border = "var(--border-style)";
-    } else {
-      main(seed, iter, null);
-    }
+    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) =>
+      main(seed, iter, tabs)
+    );
+    document.body.style.border = "var(--border-style)";
+  } else {
+    main(seed, iter, null);
   }
 };
 
