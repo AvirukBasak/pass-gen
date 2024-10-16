@@ -102,137 +102,159 @@ const sha256sum = async function (seed) {
  * @param {number} iter - The number of iterations to perform on the seed
  * @returns {Promise<string>} - The hash generated from the seed
  */
-const mkhash = async function(seed, iter) {
-    let hash = seed;
+const mkhash = async function (seed, iter) {
+  let hash = seed;
 
-    // keep track of the time taken to perform the last iteration
-    let lastTime = Date.now();
-    let timePer1000Iteration = 0;
+  // keep track of the time taken to perform the last iteration
+  let lastTime = Date.now();
+  let timePer1000Iteration = 0;
 
-    for (let i = 0; i < iter; ++i) {
-        hash = await sha256sum(hash);
-        // show % of iterations completed in the status
-        Status.innerHTML = `Generating... ${(i / iter * 100).toFixed(2)}%<br>`;
-    
-        let timeEstimate = 0;
-        // estimate time remaining using the time taken to perform the last 1000 iterations
-        if (i == 1000) {
-            timePer1000Iteration = Date.now() - lastTime;
-            // cut down the iterations by 50 to reduce overall time taken
-            iter /= 50;
-        } else if (i > 1) {
-            /* calculate remaining time using the timePer1000Iteration for the whole loop to complete
+  for (let i = 0; i < iter; ++i) {
+    hash = await sha256sum(hash);
+    // show % of iterations completed in the status
+    Status.innerHTML = `Generating... ${((i / iter) * 100).toFixed(2)}%<br>`;
+
+    let timeEstimate = 0;
+    // estimate time remaining using the time taken to perform the last 1000 iterations
+    if (i == 1000) {
+      timePer1000Iteration = Date.now() - lastTime;
+      // cut down the iterations by 50 to reduce overall time taken
+      iter /= 50;
+    } else if (i > 1) {
+      /* calculate remaining time using the timePer1000Iteration for the whole loop to complete
                and the no of iterations remaining */
-            const timePerIteration = timePer1000Iteration / 1000;
-            timeEstimate = (iter - i) * timePerIteration / 1000;
-        }
-
-        // set the time unit to second
-        let timeUnit = timeEstimate > 1 ? 'seconds' : 'second';
-        // convert to min, hr, day, yr, etc. if time remaining is greater than 60 seconds
-        if (timeEstimate > 60) {
-            timeEstimate /= 60;
-            timeUnit = timeEstimate > 1 ? 'minutes' : 'minute';
-            if (timeEstimate > 60) {
-                timeEstimate /= 60;
-                timeUnit = timeEstimate > 1 ? 'hours' : 'hour';
-                if (timeEstimate > 24) {
-                    timeEstimate /= 24;
-                    timeUnit = timeEstimate > 1 ? 'days' : 'day';
-                    if (timeEstimate > 365) {
-                        timeEstimate /= 365;
-                        timeUnit = timeEstimate > 1 ? 'years' : 'year';
-                    }
-                }
-            }
-        }
-        Status.innerHTML += ` (${timeEstimate.toFixed(2)} ${timeUnit} remaining)`;
+      const timePerIteration = timePer1000Iteration / 1000;
+      timeEstimate = ((iter - i) * timePerIteration) / 1000;
     }
-    return hash;
-}
+
+    // set the time unit to second
+    let timeUnit = timeEstimate > 1 ? "seconds" : "second";
+    // convert to min, hr, day, yr, etc. if time remaining is greater than 60 seconds
+    if (timeEstimate > 60) {
+      timeEstimate /= 60;
+      timeUnit = timeEstimate > 1 ? "minutes" : "minute";
+      if (timeEstimate > 60) {
+        timeEstimate /= 60;
+        timeUnit = timeEstimate > 1 ? "hours" : "hour";
+        if (timeEstimate > 24) {
+          timeEstimate /= 24;
+          timeUnit = timeEstimate > 1 ? "days" : "day";
+          if (timeEstimate > 365) {
+            timeEstimate /= 365;
+            timeUnit = timeEstimate > 1 ? "years" : "year";
+          }
+        }
+      }
+    }
+    Status.innerHTML += ` (${timeEstimate.toFixed(2)} ${timeUnit} remaining)`;
+  }
+  return hash;
+};
 
 /**
  * Generate the password and QR code image from the seed
+ * @typedef {Object} chrome.tabs.Tab
  * @param {string} seed - The seed string
  * @param {number} iter - The number of iterations to perform on the seed
- * @param {chrome.tabs.Tab[] || null} tabs - The active tab
- * @returns {void}
+ * @param {chrome.tabs.Tab[] | null} tabs - The active tab
+ * @returns {Promise<void>}
  * @see https://developer.chrome.com/docs/extensions/reference/tabs/#method-query
  * @see https://developer.chrome.com/docs/extensions/reference/tabs/#type-Tab
  * @see https://developer.chrome.com/docs/extensions/reference/tabs/#type-QueryInfo
  * @see https://developer.chrome.com/docs/extensions/reference/tabs/#type-TabStatus
  */
-const main = async function(seed, iter, tabs) {
-    // get domain name from the active tab
-    if (tabs && tabs.length === 0) {
-        console.error('no active tab found');
-        return;
-    }
-    const activeTab = tabs ? tabs[0] : null;
-    const domainName = activeTab ? new URL(activeTab.url).hostname
-                                 : new URL(window.location.href).hostname;
+const main = async function (seed, iter, tabs) {
+  // get domain name from the active tab
+  if (tabs && tabs.length === 0) {
+    console.error("no active tab found");
+    return;
+  }
+  const activeTab = tabs ? tabs[0] : null;
+  const domainName = activeTab
+    ? new URL(activeTab.url).hostname
+    : new URL(window.location.href).hostname;
 
-    // replace %d with the domain name in the seed
-    seed = domainName ? seed.replace(/%d/g, domainName): seed;
-    iter = parseInt(iter);
+  // replace %d with the domain name in the seed
+  seed = domainName ? seed.replace(/%d/g, domainName) : seed;
+  // iter = parseInt(iter);
 
-    // print the seed and iter values
-    console.log(`seed: ${typeof seed}: ${seed}`);
-    console.log(`iter: ${typeof iter}: ${iter}`);
+  // print the seed and iter values
+  console.log(`seed: ${typeof seed}: ${seed}`);
+  console.log(`iter: ${typeof iter}: ${iter}`);
 
-    // hide the placeholder or passed and show the status
-    Passwd.style.display = 'none';
-    Placeholder.style.display = 'none';
-    Status.style.display = 'flex';
-    
-    // disable the generate button
-    GenBtn.disabled = true;
+  // hide the placeholder or passed and show the status
+  Passwd.style.display = "none";
+  Placeholder.style.display = "none";
+  Status.style.display = "flex";
 
-    // generate the hash from the seed
-    const hash = await mkhash(seed, iter);
+  // disable the generate button
+  GenBtn.disabled = true;
 
-    /* create a password from the hash by taking the 8th to 15th characters and reversing them
+  // generate the hash from the seed
+  const hash = await mkhash(seed, iter);
+
+  /* create a password from the hash by taking the 8th to 15th characters and reversing them
        and then adding a '@' in the middle of the 15th and 22nd characters */
-    const pass = hash.substring(15, 22) + '@'
-        + hash.substring(8, 15).split('').reverse().join('');
+  const pass =
+    hash.substring(15, 21) +
+    "@" +
+    hash.substring(8, 13).split("").reverse().join("");
 
-    // print the password
-    console.log(`pass: ${typeof pass}: ${pass}`);
+  // print the password
+  console.log(`pass: ${typeof pass}: ${pass}`);
 
-    // generate the QR code image from the password
-    const statsImg = `https://chart.googleapis.com/chart?cht=qr&chs=256x256&chl=${encodeURIComponent(pass)}`;
+  // generate the QR code image from the password
+  // using alternative as Google turned off 'chart.googleapis.com' API
+  const statsImg = `https://image-charts.com/chart?cht=qr&choe=UTF-8&chs=256x256&chl=${encodeURIComponent(
+    pass
+  )}`;
 
-    // hide the status and show the password and QR code image
-    Status.style.display = 'none';
-    Passwd.style.display = 'flex';
-    ImgStats.style.display = 'block';
+  // hide the status and show the password and QR code image
+  Status.style.display = "none";
+  Passwd.style.display = "flex";
+  ImgStats.style.display = "block";
 
-    // enable the generate button
-    GenBtn.disabled = false;
+  // enable the generate button
+  GenBtn.disabled = false;
 
-    // set the password and QR code image
-    FontPasswd.innerHTML = pass;
-    ImgStats.src = statsImg;
+  // set the password and QR code image
+  FontPasswd.innerHTML = pass;
+  ImgStats.src = statsImg;
 };
 
-const genOnSubmit = function() {
-    let seed = SeedInp.value.trim();
-    let iter = parseInt(IterInp.value);
+const genOnSubmit = function () {
+  const seed = SeedInp.value.trim();
+  let iterStr = IterInp.value.trim();
+  if (!iterStr) {
+    iterStr = String(Math.floor(Math.random() * Math.pow(2, 16) + 10000));
+  }
 
-    /* check if (seed) and generate a 16 character long password from the sha512 hash of the seed
+  let iter = 0;
+  try {
+    iter = parseInt(iterStr);
+  } catch (err) {
+    alert("Invalid iteration value");
+    return;
+  }
+
+  /* check if (seed) and generate a 16 character long password from the sha512 hash of the seed
     if iter is absent then assume a random iter b/w 1 and pow(2,8) otherwise perform len / iter numbers
     of SHA-256 hashing iterations on the seed */
-    if (seed) {
-        SeedInp.value = seed;
-        IterInp.value = iter = parseInt(iter) || Math.floor(Math.random() * Math.pow(2, 16) + 10000);
-
-        if (chrome?.tabs?.query) {
-            chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => main(seed, iter, tabs));
-            document.body.style.border = 'var(--border-style)';
-        }
-        else main(seed, iter, null);
+  if (seed) {
+    SeedInp.value = seed;
+    IterInp.value = String(iter);
+    // @ts-ignore
+    if (chrome?.tabs?.query) {
+      // @ts-ignore
+      chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) =>
+        main(seed, iter, tabs)
+      );
+      document.body.style.border = "var(--border-style)";
+    } else {
+      main(seed, iter, null);
     }
-}
+  }
+};
 
 GenBtn.onclick = genOnSubmit;
 CopyBtn.onclick = copyToClipboard;
