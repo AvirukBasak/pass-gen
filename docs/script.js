@@ -56,37 +56,45 @@ if (
  * @returns {void}
  * @see https://stackoverflow.com/a/30810322/8608146
  */
-const copyToClipboard = function() {
-    // copy the password to the clipboard using latest APIs
-    navigator.clipboard.writeText(FontPasswd.innerHTML).then(() => {
-        // change the icon to a check mark for 1.5 seconds
-        setTimeout(() => {
-            btnCopy.innerHTML = '<i class="far fa-copy"></i>';
-        }, 1500);
-        const btnCopy = document.getElementById('btn-copy');
-        btnCopy.innerHTML = '<i class="fas fa-check"></i> Copied';
-    }).catch(err => {
-        console.error(err);
+const copyToClipboard = function () {
+  // copy the password to the clipboard using latest APIs
+  navigator.clipboard
+    .writeText(FontPasswd.innerHTML)
+    .then(() => {
+      const btnCopy = document.getElementById("btn-copy");
+      if (!btnCopy) {
+        console.error("missing copy button");
+        return;
+      }
+      // change the icon to a check mark for 1.5 seconds
+      setTimeout(() => {
+        btnCopy.innerHTML = '<i class="far fa-copy"></i>';
+      }, 1500);
+      btnCopy.innerHTML = '<i class="fas fa-check"></i> Copied';
+    })
+    .catch((err) => {
+      console.error(err);
     });
-}
+};
 
 /**
  * Generate a sha256 hash from the seed with the hex string formatted to have alternating upper and lower case characters
  * @param {string} seed - The seed string
  * @returns {Promise<string>} - The sha256 hash generated from the seed
  */
-const sha256sum = async function(seed) {
-    const hash = await crypto.subtle
-        .digest('SHA-256', new TextEncoder('utf-8')
-        .encode(seed));
-    const hexString = Array.from(new Uint8Array(hash))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-    const formattedString = hexString.split('')
-        .map((c, i) => i % 2 === 0 ? c.toUpperCase() : c.toLowerCase())
-        .join('');
-    return formattedString;
-}
+const sha256sum = async function (seed) {
+  const hash = await crypto.subtle
+    // @ts-ignore
+    .digest("SHA-256", new TextEncoder("utf-8").encode(seed));
+  const hexString = Array.from(new Uint8Array(hash))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  const formattedString = hexString
+    .split("")
+    .map((c, i) => (i % 2 === 0 ? c.toUpperCase() : c.toLowerCase()))
+    .join("");
+  return formattedString;
+};
 
 /**
  * Generate a hash from the seed by performing iter number of sha256 iterations on the seed
